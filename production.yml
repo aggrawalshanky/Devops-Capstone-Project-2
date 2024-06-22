@@ -1,0 +1,37 @@
+# Creating a Deployment with the type RollingUpdate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dp-pod
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: live-app
+  template:
+    metadata:
+      labels:
+        app: live-app
+    spec:
+      containers:
+        - name: production-container
+          image: aggrawalshanky/testimage
+          ports:
+            - containerPort: 80
+---
+# Creating a Service for the pod
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc
+spec:
+  type: NodePort
+  selector:
+    app: live-app
+  ports:
+    - port: 8080
+      targetPort: 80
+      nodePort: 30008
